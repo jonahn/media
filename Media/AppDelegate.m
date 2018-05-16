@@ -3,7 +3,7 @@
 //  Media
 //
 //  Created by Jonathan on 2018/4/23.
-//  Copyright © 2018年 WWeng. All rights reserved.
+//  Copyright © 2018年 JN. All rights reserved.
 //
 
 #import "AppDelegate.h"
