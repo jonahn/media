@@ -47,16 +47,9 @@
 
 - (void)setupVideoProcess
 {
-    
-    [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+//    [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     //会话
     _captureSession = [[AVCaptureSession alloc] init];
-    if ([_captureSession canSetSessionPreset:_sessionPreset]) {
-        [_captureSession setSessionPreset:_sessionPreset];
-    }
-    else{
-        [_captureSession setSessionPreset:AVCaptureSessionPreset1280x720];
-    }
     [_captureSession beginConfiguration];
     
     //摄像头
@@ -69,27 +62,49 @@
     [_videoDevice unlockForConfiguration];
     
     //input
-    _videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:_videoDevice error:nil];
+    NSError *error = nil;
+    _videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:_videoDevice error:&error];
     if (_videoInput && [_captureSession canAddInput:_videoInput]) {
         [_captureSession addInput:_videoInput];
     }
     //处理队列
-    _videoProcessingQueue = dispatch_queue_create(JNVideoProcessingQueue, DISPATCH_QUEUE_SERIAL);
+    _videoProcessingQueue = dispatch_queue_create(JNVideoProcessingQueue, NULL);
     //videoDataOutput
     _videoDataOutput = [[AVCaptureVideoDataOutput alloc] init];
-    _videoDataOutput.videoSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:_pixelFormat] forKey:(NSString *)kCVPixelBufferPixelFormatTypeKey];
-    [_videoDataOutput setAlwaysDiscardsLateVideoFrames:YES];
+    _videoDataOutput.videoSettings = @{
+                                       (__bridge NSString *)kCVPixelBufferPixelFormatTypeKey:@(_pixelFormat)
+                                       };
+    [_videoDataOutput setAlwaysDiscardsLateVideoFrames:NO];
     //设置buffer返回代理和处理队列
     [_videoDataOutput setSampleBufferDelegate:self queue:_videoProcessingQueue];
     
     if ([_captureSession canAddOutput:_videoDataOutput]) {
         [_captureSession addOutput:_videoDataOutput];
     }
+    
+    AVCaptureConnection *connection = [_videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+    connection.videoOrientation = AVCaptureVideoOrientationPortrait;
+    if ([connection isVideoStabilizationSupported]) {
+        connection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeAuto;
+    }
+    connection.videoScaleAndCropFactor = connection.videoMaxScaleAndCropFactor;
+    
+    
+    if ([_captureSession canSetSessionPreset:_sessionPreset]) {
+        [_captureSession setSessionPreset:_sessionPreset];
+    }
+    else{
+        [_captureSession setSessionPreset:AVCaptureSessionPreset1280x720];
+    }
+    
     [_captureSession commitConfiguration];
 }
 
 - (void)startCapture
 {
+    if(_running){
+        return;
+    }
     if (_captureSession) {
         [_captureSession startRunning];
         _running = YES;
@@ -153,7 +168,7 @@
     return nil;
 }
 
-- (void)captureOutput:(AVCaptureOutput *)output didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+- (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
     if (self.videoDataCallBack) {
         self.videoDataCallBack(sampleBuffer);

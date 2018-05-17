@@ -18,6 +18,7 @@
 		AB29F3F1208DB4AE00A06696 /* MediaUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = AB29F3F0208DB4AE00A06696 /* MediaUITests.m */; };
 		AB29F402208DB51500A06696 /* JNAUAudioCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = AB29F3FF208DB51400A06696 /* JNAUAudioCapture.m */; };
 		AB29F403208DB51500A06696 /* JNAVVideoCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = AB29F401208DB51500A06696 /* JNAVVideoCapture.m */; };
+		AB77DD0020AD9E8F009E03EC /* GPUImageBeautifyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB77DCFF20AD9E8F009E03EC /* GPUImageBeautifyFilter.m */; };
 		AB78657220AC3686003D2981 /* JNInputImageNode.m in Sources */ = {isa = PBXBuildFile; fileRef = AB78657120AC3686003D2981 /* JNInputImageNode.m */; };
 		D9B7585DB568BBBECD061CC7 /* libPods-Media.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 547E4026C74380E2C7260ECF /* libPods-Media.a */; };
 		E0EE3AAF33C132ADEDA1AFE6 /* libPods-MediaUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA17462D3BDE8A9D6FC0113 /* libPods-MediaUITests.a */; };
@@ -69,6 +70,8 @@
 		AB29F3FF208DB51400A06696 /* JNAUAudioCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNAUAudioCapture.m; sourceTree = "<group>"; };
 		AB29F400208DB51500A06696 /* JNAVVideoCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JNAVVideoCapture.h; sourceTree = "<group>"; };
 		AB29F401208DB51500A06696 /* JNAVVideoCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JNAVVideoCapture.m; sourceTree = "<group>"; };
+		AB77DCFE20AD9E8F009E03EC /* GPUImageBeautifyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageBeautifyFilter.h; sourceTree = "<group>"; };
+		AB77DCFF20AD9E8F009E03EC /* GPUImageBeautifyFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUImageBeautifyFilter.m; sourceTree = "<group>"; };
 		AB78657020AC3686003D2981 /* JNInputImageNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNInputImageNode.h; sourceTree = "<group>"; };
 		AB78657120AC3686003D2981 /* JNInputImageNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNInputImageNode.m; sourceTree = "<group>"; };
 		B98790C2E3798C03BA496356 /* Pods-MediaUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MediaUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MediaUITests/Pods-MediaUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -150,6 +153,8 @@
 		AB29F3CB208DB4AC00A06696 /* Media */ = {
 			isa = PBXGroup;
 			children = (
+				AB77DCFE20AD9E8F009E03EC /* GPUImageBeautifyFilter.h */,
+				AB77DCFF20AD9E8F009E03EC /* GPUImageBeautifyFilter.m */,
 				AB29F3FE208DB51400A06696 /* JNAUAudioCapture.h */,
 				AB29F3FF208DB51400A06696 /* JNAUAudioCapture.m */,
 				AB29F400208DB51500A06696 /* JNAVVideoCapture.h */,
@@ -487,6 +492,7 @@
 				AB78657220AC3686003D2981 /* JNInputImageNode.m in Sources */,
 				AB29F403208DB51500A06696 /* JNAVVideoCapture.m in Sources */,
 				AB29F402208DB51500A06696 /* JNAUAudioCapture.m in Sources */,
+				AB77DD0020AD9E8F009E03EC /* GPUImageBeautifyFilter.m in Sources */,
 				AB29F3D1208DB4AD00A06696 /* ViewController.m in Sources */,
 				AB29F3DC208DB4AE00A06696 /* main.m in Sources */,
 				AB29F3CE208DB4AD00A06696 /* AppDelegate.m in Sources */,

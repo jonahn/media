@@ -12,7 +12,6 @@
 #import <GPUImage.h>
 
 @interface JNInputImageNode : GPUImageOutput
-@property(nonatomic, assign) GPUImageRotationMode outputRotation;
 
 /**
  @param fmt 输入buffer格式
@@ -22,4 +21,6 @@
  @return ins
  */
 - (instancetype)initWithInputFmt:(UInt32)fmt;
+
+- (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 @end
