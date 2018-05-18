@@ -8,17 +8,19 @@
 
 #import "ViewController.h"
 #import "JNAVVideoCapture.h"
-#import "JNInputImageNode.h"
+#import "JNGPUInputNode.h"
 #import "GPUImageBeautifyFilter.h"
+#import "JNGPUOutputNode.h"
 
 @interface ViewController ()
 @property (nonatomic, strong) JNAVVideoCapture *videoCapture;
-@property (nonatomic, strong) JNInputImageNode *inputNode;
+@property (nonatomic, strong) JNGPUInputNode *inputNode;
 @property (nonatomic, strong) GPUImageView *displayImageView;
 @property (nonatomic, strong)  GPUImageVideoCamera *videoCamera;
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) GPUImageBeautifyFilter *beautyFilter;
+@property (nonatomic, strong) JNGPUOutputNode *outputNode;
 @end
 
 @implementation ViewController
@@ -62,7 +64,7 @@
 
 - (void)jn_videoCaptureTestUseInputImageNode
 {
-    self.inputNode = [[JNInputImageNode alloc] initWithInputFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange];
+    self.inputNode = [[JNGPUInputNode alloc] initWithInputFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange];
     
     GPUImageView *displayImageView = [[GPUImageView alloc] init];
     displayImageView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
@@ -71,7 +73,7 @@
     [self.view addSubview:displayImageView];
     [self.view sendSubviewToBack:displayImageView];
     self.displayImageView = displayImageView;
-    
+
     [self.inputNode addTarget:displayImageView];
     
     __weak typeof(self) weakSelf = self;
@@ -79,6 +81,39 @@
         __strong typeof(weakSelf) sSelf = weakSelf;
         [sSelf.inputNode processVideoSampleBuffer:sampleBuffer];
     }];
+}
+
+- (void)jn__testOutputNode
+{
+    self.inputNode = [[JNGPUInputNode alloc] initWithInputFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange];
+    
+    GPUImageView *displayImageView = [[GPUImageView alloc] init];
+    displayImageView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
+    displayImageView.backgroundColor = [UIColor blackColor];
+    displayImageView.frame = self.view.bounds;
+    [self.view addSubview:displayImageView];
+    [self.view sendSubviewToBack:displayImageView];
+    self.displayImageView = displayImageView;
+    [self.displayImageView setHidden:YES];
+    [self.inputNode addTarget:displayImageView];
+    
+    __weak typeof(self) weakSelf = self;
+    self.videoCapture  = [[JNAVVideoCapture alloc] initWithPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionFront fps:25 outPutDataFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange processingCallback:^(CMSampleBufferRef sampleBuffer) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        [sSelf.inputNode processVideoSampleBuffer:sampleBuffer];
+    }];
+    
+    self.imageView = [[UIImageView alloc] init];
+    self.imageView.frame = self.view.bounds;
+    [self.view addSubview:self.imageView];
+    [self.view sendSubviewToBack:self.imageView];
+    
+    self.outputNode = [[JNGPUOutputNode alloc] init];
+    self.outputNode.processingCallback32BGRA = ^(CVPixelBufferRef pixelBuffer, CMTime timeInfo) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        [sSelf drawPixelBuffer:pixelBuffer];
+    };
+    [self.inputNode addTarget:self.outputNode];
 }
 
 - (void)jn__testGPUCamera
@@ -117,13 +152,16 @@
     if (sender.selected) {
         [self.inputNode removeAllTargets];
         [self.beautyFilter removeTarget:self.displayImageView];
+        [self.beautyFilter removeTarget:self.outputNode];
         [self.inputNode addTarget:self.displayImageView];
+        [self.inputNode addTarget:self.outputNode];
         sender.selected = NO;
     }
     else{
         [self.inputNode removeAllTargets];
         [self.inputNode addTarget:self.beautyFilter];
         [self.beautyFilter addTarget:self.displayImageView];
+        [self.beautyFilter addTarget:self.outputNode];
         sender.selected = YES;
     }
     
@@ -152,6 +190,36 @@
     CGDataProviderRelease(provider);
     CGColorSpaceRelease(rgbColorSpace);
 
+    NSData* imageData = UIImageJPEGRepresentation(image, 1.0);
+    image = [UIImage imageWithData:imageData];
+    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.imageView setImage:image];
+    });
+}
+- (void)drawPixelBuffer:(CVPixelBufferRef)pixelBuffer
+{
+    CVImageBufferRef imageBuffer =  pixelBuffer;
+    
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    size_t bufferSize = CVPixelBufferGetDataSize(imageBuffer);
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0);
+    
+    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, baseAddress, bufferSize, NULL);
+    
+    CGImageRef cgImage = CGImageCreate(width, height, 8, 32, bytesPerRow, rgbColorSpace, kCGImageAlphaNoneSkipFirst|kCGBitmapByteOrder32Little, provider, NULL, true, kCGRenderingIntentDefault);
+    
+    
+    UIImage *image = [UIImage imageWithCGImage:cgImage];
+    
+    CGImageRelease(cgImage);
+    CGDataProviderRelease(provider);
+    CGColorSpaceRelease(rgbColorSpace);
+    
     NSData* imageData = UIImageJPEGRepresentation(image, 1.0);
     image = [UIImage imageWithData:imageData];
     CVPixelBufferUnlockBaseAddress(imageBuffer, 0);

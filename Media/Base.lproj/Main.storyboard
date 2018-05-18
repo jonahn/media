@@ -35,6 +35,7 @@
                                 <rect key="frame" x="211" y="554" width="148" height="34"/>
                                 <color key="backgroundColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="openBeautifyFilter"/>
+                                <state key="selected" title="closeBeautifyFilter"/>
                                 <state key="highlighted" title="closeBeautifyFilter"/>
                                 <connections>
                                     <action selector="openBeautifyFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="itX-6L-hEu"/>

@@ -6,9 +6,9 @@
 //  Copyright © 2018年 JN. All rights reserved.
 //
 
-#import "JNInputImageNode.h"
+#import "JNGPUInputNode.h"
 
-@interface JNInputImageNode ()
+@interface JNGPUInputNode ()
 {
     const GLfloat *_preferredConversion;
 }
@@ -24,7 +24,7 @@
 @property (nonatomic, assign) GPUImageRotationMode outputRotation;
 @end
 
-@implementation JNInputImageNode
+@implementation JNGPUInputNode
 - (instancetype)initWithInputFmt:(UInt32)fmt
 {
     self = [super init];

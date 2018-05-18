@@ -11,7 +11,7 @@
 
 #import <GPUImage.h>
 
-@interface JNInputImageNode : GPUImageOutput
+@interface JNGPUInputNode : GPUImageOutput
 
 /**
  @param fmt 输入buffer格式
