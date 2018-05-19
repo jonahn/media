@@ -41,11 +41,24 @@
                                     <action selector="openBeautifyFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="itX-6L-hEu"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lN8-ym-1w2">
+                                <rect key="frame" x="243" y="479" width="84" height="34"/>
+                                <color key="backgroundColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="startH264"/>
+                                <state key="selected" title="stopH264"/>
+                                <state key="highlighted" title="closeBeautifyFilter"/>
+                                <connections>
+                                    <action selector="h264EncodeClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aYl-Le-IHO"/>
+                                    <action selector="openBeautifyFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qNY-hJ-GHZ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="QzV-8g-qwf" firstAttribute="top" secondItem="lN8-ym-1w2" secondAttribute="bottom" constant="41" id="8bc-43-g3F"/>
                             <constraint firstItem="QzV-8g-qwf" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="A2U-as-poi"/>
                             <constraint firstItem="dVo-Ed-Twf" firstAttribute="top" secondItem="0MD-ic-WKa" secondAttribute="bottom" constant="77" id="Dtg-O9-aHi"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="lN8-ym-1w2" secondAttribute="trailing" constant="32" id="RTB-zK-y28"/>
                             <constraint firstItem="0MD-ic-WKa" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="9" id="sAe-rR-Tw6"/>
                             <constraint firstItem="dVo-Ed-Twf" firstAttribute="top" secondItem="QzV-8g-qwf" secondAttribute="bottom" constant="79" id="sxl-Q8-VyS"/>
                         </constraints>

@@ -40,12 +40,12 @@
         _fps = fps;
         _pixelFormat = fmt;
         _videoDataCallBack = callback;
-        [self setupVideoProcess];
+        [self jn__setupVideoProcess];
     }
     return self;
 }
 
-- (void)setupVideoProcess
+- (void)jn__setupVideoProcess
 {
 //    [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     //会话
@@ -53,7 +53,7 @@
     [_captureSession beginConfiguration];
     
     //摄像头
-    _videoDevice = [self cameraWithPosition:_cameraPosition];
+    _videoDevice = [self jn__cameraWithPosition:_cameraPosition];
     
     //帧数
     [_videoDevice lockForConfiguration:nil];
@@ -127,7 +127,7 @@
     else{
         _cameraPosition = AVCaptureDevicePositionFront;
     }
-    AVCaptureDevice *newDevice = [self cameraWithPosition:_cameraPosition];
+    AVCaptureDevice *newDevice = [self jn__cameraWithPosition:_cameraPosition];
     [_captureSession beginConfiguration];
     [_captureSession removeInput:_videoInput];
     _videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:newDevice error:nil];
@@ -157,7 +157,7 @@
 }
 
 // 这是获取前后摄像头对象的方法
-- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition)position
+- (AVCaptureDevice *)jn__cameraWithPosition:(AVCaptureDevicePosition)position
 {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *device in devices) {

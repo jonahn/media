@@ -27,7 +27,7 @@
     self = [super init];
     if (self) {
         _sampleRate = sampleRate;
-        [self _setup];
+        [self jn__setup];
     }
     return self;
 }
@@ -49,7 +49,7 @@
     return _audioProcessingQueue;
 }
 
-- (void)_setup
+- (void)jn__setup
 {
     _streamDesc.mSampleRate = _sampleRate;
     _streamDesc.mFormatID = kAudioFormatLinearPCM;
@@ -75,12 +75,12 @@
     
     AURenderCallbackStruct micCallback;
     micCallback.inputProcRefCon = (__bridge void *)(self);
-    micCallback.inputProc = _micCallBackFun;
+    micCallback.inputProc = jn__micCallBackFun;
     
     AudioUnitSetProperty(_audioComponentInstance, kAudioOutputUnitProperty_SetInputCallback, kAudioUnitScope_Global, 1, &micCallback, sizeof(micCallback));
 }
 
-OSStatus _micCallBackFun(void *inRefCon,
+OSStatus jn__micCallBackFun(void *inRefCon,
                         AudioUnitRenderActionFlags *ioActionFlags,
                         const AudioTimeStamp *inTimeStamp,
                         UInt32 inBusNumber,
@@ -105,11 +105,11 @@ OSStatus _micCallBackFun(void *inRefCon,
                         1,
                         inNumberFrames,
                         &bufferList);
-        [ref _toSampleBuffer:bufferList inNumberFrames:inNumberFrames];
+        [ref jn__toSampleBuffer:bufferList inNumberFrames:inNumberFrames];
         return noErr;
     }
 }
-- (void)_toSampleBuffer:(AudioBufferList)audioBufferList inNumberFrames:(UInt32)inNumberFrames
+- (void)jn__toSampleBuffer:(AudioBufferList)audioBufferList inNumberFrames:(UInt32)inNumberFrames
 {
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.audioProcessingQueue, ^{

@@ -11,6 +11,7 @@
 #import "JNGPUInputNode.h"
 #import "GPUImageBeautifyFilter.h"
 #import "JNGPUOutputNode.h"
+#import "JNH264Encoder.h"
 
 @interface ViewController ()
 @property (nonatomic, strong) JNAVVideoCapture *videoCapture;
@@ -21,6 +22,10 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) GPUImageBeautifyFilter *beautyFilter;
 @property (nonatomic, strong) JNGPUOutputNode *outputNode;
+
+@property (nonatomic, strong) JNH264Encoder *h264Encoder;
+@property (nonatomic, strong)  NSFileHandle *h264fileHandle;
+@property (nonatomic, strong)  NSString     *h264FilePath;
 @end
 
 @implementation ViewController
@@ -34,8 +39,12 @@
     
 //    [self jn_videoCaptureTestUseVideoPreviewLayer];
     
-    [self jn_videoCaptureTestUseInputImageNode];
-
+//    [self jn_videoCaptureTestUseInputImageNode];
+    
+//    [self jn__testOutputNode];
+    
+    [self jn__testH264Encoder];
+    
 //    [self jn__testGPUCamera];
 }
 
@@ -84,6 +93,67 @@
 }
 
 - (void)jn__testOutputNode
+{
+    self.inputNode = [[JNGPUInputNode alloc] initWithInputFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange];
+    
+    GPUImageView *displayImageView = [[GPUImageView alloc] init];
+    displayImageView.fillMode = kGPUImageFillModePreserveAspectRatioAndFill;
+    displayImageView.backgroundColor = [UIColor blackColor];
+    displayImageView.frame = self.view.bounds;
+    [self.view addSubview:displayImageView];
+    [self.view sendSubviewToBack:displayImageView];
+    self.displayImageView = displayImageView;
+    [self.displayImageView setHidden:YES];
+    [self.inputNode addTarget:displayImageView];
+    
+    __weak typeof(self) weakSelf = self;
+    self.videoCapture  = [[JNAVVideoCapture alloc] initWithPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionFront fps:25 outPutDataFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange processingCallback:^(CMSampleBufferRef sampleBuffer) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        [sSelf.inputNode processVideoSampleBuffer:sampleBuffer];
+    }];
+    
+    self.imageView = [[UIImageView alloc] init];
+    self.imageView.frame = self.view.bounds;
+    [self.view addSubview:self.imageView];
+    [self.view sendSubviewToBack:self.imageView];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    self.h264FilePath = [documentsDirectory stringByAppendingPathComponent:@"TestH264.h264"];
+    [fileManager removeItemAtPath:self.h264FilePath error:nil];
+    [fileManager createFileAtPath:self.h264FilePath contents:nil attributes:nil];
+    
+    self.h264Encoder = [[JNH264Encoder alloc] init];
+    self.h264Encoder.processingEncodedData = ^(NSData *sps, NSData *pps, NSData *frameData, BOOL isKeyFrame) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        if (!sSelf.h264fileHandle) {
+            sSelf.h264fileHandle = [NSFileHandle fileHandleForWritingAtPath:sSelf.h264FilePath];
+        }
+        const char bytes[] = "\x00\x00\x00\x01";
+        size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
+        NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
+        if (isKeyFrame) {
+            [sSelf.h264fileHandle writeData:ByteHeader];
+            [sSelf.h264fileHandle writeData:sps];
+            [sSelf.h264fileHandle writeData:ByteHeader];
+            [sSelf.h264fileHandle writeData:pps];
+        }
+        [sSelf.h264fileHandle writeData:ByteHeader];
+        [sSelf.h264fileHandle writeData:frameData];
+    };
+     
+    
+    self.outputNode = [[JNGPUOutputNode alloc] init];
+    self.outputNode.processingCallback32BGRA = ^(CVPixelBufferRef pixelBuffer, CMTime timeInfo) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        [sSelf drawPixelBuffer:pixelBuffer];
+        [sSelf.h264Encoder processVideoBuffer:pixelBuffer timeInfo:timeInfo];
+    };
+    [self.inputNode addTarget:self.outputNode];
+}
+
+- (void)jn__testH264Encoder
 {
     self.inputNode = [[JNGPUInputNode alloc] initWithInputFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange];
     
@@ -165,6 +235,16 @@
         sender.selected = YES;
     }
     
+}
+- (IBAction)h264EncodeClick:(UIButton *)sender {
+    if (sender.selected) {
+        [self.h264Encoder stop];
+        sender.selected = NO;
+    }
+    else{
+        [self.h264Encoder run];
+        sender.selected = YES;
+    }
 }
 
 - (void)drawSampleBuffer:(CMSampleBufferRef)sampleBuffer

@@ -57,8 +57,8 @@
     if (iVar == nil) {
         iVar = class_getInstanceVariable([newInputFramebuffer class], [[NSString stringWithFormat:@"_%@",@"renderTarget"] UTF8String]);
     }
-    id propertyVal = object_getIvar(newInputFramebuffer, iVar);
-    _pixelbuffer = (__bridge CVPixelBufferRef)(propertyVal);
+    id propertyVar = object_getIvar(newInputFramebuffer, iVar);
+    _pixelbuffer = (__bridge CVPixelBufferRef)(propertyVar);
 }
 
 - (void)setInputRotation:(GPUImageRotationMode)newInputRotation atIndex:(NSInteger)textureIndex {
