@@ -7,7 +7,7 @@ iOS media tool
 3. 基于GPUImage的视频流处理     JNGPUInputNode
     美颜来自https://github.com/Guikunzhi/BeautifyFaceDemo
 4. GPUImage处理后输出buffer      JNGPUOutputNode
-
+5. 视频编码（硬编VideoToolBox）
 
 接下来
-1. 音视频编码
+1. 音频编码
