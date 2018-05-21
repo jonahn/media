@@ -10,8 +10,9 @@
 @interface JNH264Encoder ()
 {
     dispatch_queue_t _encodeQueue;
-    VTCompressionSessionRef _vtSession;
 }
+@property (nonatomic, assign) VTCompressionSessionRef vtSession;
+
 @end
 
 @implementation JNH264Encoder
@@ -109,8 +110,8 @@ void jn__processingCallback(void *encoderIns, void *sourceFrameRefCon, OSStatus 
     }
     status = VTSessionSetProperty(_vtSession, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);//实时执行
     status = VTSessionSetProperty(_vtSession, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_AutoLevel);
-    status  = VTSessionSetProperty(_vtSession, kVTCompressionPropertyKey_AverageBitRate, (__bridge CFTypeRef)@(self.kbps));
-    status += VTSessionSetProperty(_vtSession, kVTCompressionPropertyKey_DataRateLimits, (__bridge CFArrayRef)@[@(self.kbps*2/8), @1]);
+    status  = VTSessionSetProperty(_vtSession, kVTCompressionPropertyKey_AverageBitRate, (__bridge CFTypeRef)@(self.kbps * 1000));
+    status += VTSessionSetProperty(_vtSession, kVTCompressionPropertyKey_DataRateLimits, (__bridge CFArrayRef)@[@(self.kbps * 1000 *2/8), @1]);
     status = VTSessionSetProperty(_vtSession, kVTCompressionPropertyKey_MaxKeyFrameInterval, (__bridge CFTypeRef)@(self.gop));
     status = VTSessionSetProperty(_vtSession, kVTCompressionPropertyKey_ExpectedFrameRate, (__bridge CFTypeRef)@(self.fps));
     status = VTCompressionSessionPrepareToEncodeFrames(_vtSession);
@@ -137,11 +138,10 @@ void jn__processingCallback(void *encoderIns, void *sourceFrameRefCon, OSStatus 
         return;
     }
     __weak typeof(self) weakSelf = self;
-    __block typeof(_vtSession) blockSession = _vtSession;
     dispatch_async(_encodeQueue, ^{
         __strong typeof(weakSelf) sSelf = weakSelf;
         VTEncodeInfoFlags flags;
-        OSStatus statusCode = VTCompressionSessionEncodeFrame(blockSession,
+        OSStatus statusCode = VTCompressionSessionEncodeFrame(sSelf.vtSession,
                                                               pixelBuffer,
                                                               timeInfo, kCMTimeInvalid,
                                                               NULL, NULL, &flags);
