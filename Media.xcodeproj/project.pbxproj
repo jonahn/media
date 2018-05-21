@@ -22,6 +22,7 @@
 		AB77DD0320ADA865009E03EC /* JNGPUOutputNode.m in Sources */ = {isa = PBXBuildFile; fileRef = AB77DD0220ADA865009E03EC /* JNGPUOutputNode.m */; };
 		AB78657220AC3686003D2981 /* JNGPUInputNode.m in Sources */ = {isa = PBXBuildFile; fileRef = AB78657120AC3686003D2981 /* JNGPUInputNode.m */; };
 		ABD85A9E20AEF2AF00547A84 /* JNH264Encoder.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85A9D20AEF2AF00547A84 /* JNH264Encoder.m */; };
+		ABFF95A620B2E1BF00F6C2B2 /* JNACCEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFF95A520B2E1BF00F6C2B2 /* JNACCEncoder.m */; };
 		D9B7585DB568BBBECD061CC7 /* libPods-Media.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 547E4026C74380E2C7260ECF /* libPods-Media.a */; };
 		E0EE3AAF33C132ADEDA1AFE6 /* libPods-MediaUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA17462D3BDE8A9D6FC0113 /* libPods-MediaUITests.a */; };
 /* End PBXBuildFile section */
@@ -80,6 +81,8 @@
 		AB78657120AC3686003D2981 /* JNGPUInputNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNGPUInputNode.m; sourceTree = "<group>"; };
 		ABD85A9C20AEF2AF00547A84 /* JNH264Encoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNH264Encoder.h; sourceTree = "<group>"; };
 		ABD85A9D20AEF2AF00547A84 /* JNH264Encoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNH264Encoder.m; sourceTree = "<group>"; };
+		ABFF95A420B2E1BF00F6C2B2 /* JNACCEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNACCEncoder.h; sourceTree = "<group>"; };
+		ABFF95A520B2E1BF00F6C2B2 /* JNACCEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNACCEncoder.m; sourceTree = "<group>"; };
 		B98790C2E3798C03BA496356 /* Pods-MediaUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MediaUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MediaUITests/Pods-MediaUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -171,6 +174,8 @@
 				AB77DD0220ADA865009E03EC /* JNGPUOutputNode.m */,
 				ABD85A9C20AEF2AF00547A84 /* JNH264Encoder.h */,
 				ABD85A9D20AEF2AF00547A84 /* JNH264Encoder.m */,
+				ABFF95A420B2E1BF00F6C2B2 /* JNACCEncoder.h */,
+				ABFF95A520B2E1BF00F6C2B2 /* JNACCEncoder.m */,
 				AB29F3CC208DB4AC00A06696 /* AppDelegate.h */,
 				AB29F3CD208DB4AD00A06696 /* AppDelegate.m */,
 				AB29F3CF208DB4AD00A06696 /* ViewController.h */,
@@ -507,6 +512,7 @@
 				AB29F3D1208DB4AD00A06696 /* ViewController.m in Sources */,
 				AB29F3DC208DB4AE00A06696 /* main.m in Sources */,
 				AB29F3CE208DB4AD00A06696 /* AppDelegate.m in Sources */,
+				ABFF95A620B2E1BF00F6C2B2 /* JNACCEncoder.m in Sources */,
 				AB77DD0320ADA865009E03EC /* JNGPUOutputNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

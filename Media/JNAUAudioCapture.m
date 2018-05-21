@@ -105,7 +105,12 @@ OSStatus jn__micCallBackFun(void *inRefCon,
                         1,
                         inNumberFrames,
                         &bufferList);
-        [ref jn__toSampleBuffer:bufferList inNumberFrames:inNumberFrames];
+        if (ref.audioProcessingBufferList) {
+            ref.audioProcessingBufferList(bufferList, inNumberFrames);
+        }
+        if (ref.audioProcessingCallback) {
+            [ref jn__toSampleBuffer:bufferList inNumberFrames:inNumberFrames];
+        }
         return noErr;
     }
 }

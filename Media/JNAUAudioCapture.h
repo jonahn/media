@@ -12,7 +12,7 @@
 @interface JNAUAudioCapture : NSObject
 
 @property (nonatomic, copy) void(^audioProcessingCallback)(CMSampleBufferRef sampleBuffer);
-
+@property (nonatomic, copy) void(^audioProcessingBufferList)(AudioBufferList bufferList, UInt32 inNumberFrames);
 - (instancetype)initWithSampleRate:(double)sampleRate;
 
 - (void)startCapture;
