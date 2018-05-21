@@ -47,7 +47,6 @@
                                 <state key="selected" title="stopH264"/>
                                 <connections>
                                     <action selector="h264EncodeClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aYl-Le-IHO"/>
-                                    <action selector="openBeautifyFilter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qNY-hJ-GHZ"/>
                                 </connections>
                             </button>
                         </subviews>

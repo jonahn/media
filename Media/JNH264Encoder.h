@@ -18,7 +18,8 @@
 @property (nonatomic, assign) int gop;  //每过几秒设置关键帧, gop越大压缩越多，直播设置小一点:3
 
 //不是关键帧没有sps pps
-@property (nonatomic, copy)   void(^processingEncodedData)(NSData *sps, NSData *pps, NSData *frameData, BOOL isKeyFrame);
+@property (nonatomic, copy)   void(^processingSpsPps)(NSData *sps, NSData *pps);
+@property (nonatomic, copy)   void(^processingEncodedData)(NSData *frameData, BOOL isKeyFrame);
 
 - (void)processVideoBuffer:(CVPixelBufferRef)pixelBuffer timeInfo:(CMTime)timeInfo;
 

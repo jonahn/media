@@ -92,7 +92,7 @@
     }];
 }
 
-- (void)jn__testOutputNode
+- (void)jn__testH264Encoder
 {
     self.inputNode = [[JNGPUInputNode alloc] initWithInputFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange];
     
@@ -125,7 +125,7 @@
     [fileManager createFileAtPath:self.h264FilePath contents:nil attributes:nil];
     
     self.h264Encoder = [[JNH264Encoder alloc] init];
-    self.h264Encoder.processingEncodedData = ^(NSData *sps, NSData *pps, NSData *frameData, BOOL isKeyFrame) {
+    self.h264Encoder.processingEncodedData = ^(NSData *frameData, BOOL isKeyFrame) {
         __strong typeof(weakSelf) sSelf = weakSelf;
         if (!sSelf.h264fileHandle) {
             sSelf.h264fileHandle = [NSFileHandle fileHandleForWritingAtPath:sSelf.h264FilePath];
@@ -133,16 +133,22 @@
         const char bytes[] = "\x00\x00\x00\x01";
         size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
         NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
-        if (isKeyFrame) {
-            [sSelf.h264fileHandle writeData:ByteHeader];
-            [sSelf.h264fileHandle writeData:sps];
-            [sSelf.h264fileHandle writeData:ByteHeader];
-            [sSelf.h264fileHandle writeData:pps];
-        }
         [sSelf.h264fileHandle writeData:ByteHeader];
         [sSelf.h264fileHandle writeData:frameData];
     };
-     
+    self.h264Encoder.processingSpsPps = ^(NSData *sps, NSData *pps) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        if (!sSelf.h264fileHandle) {
+            sSelf.h264fileHandle = [NSFileHandle fileHandleForWritingAtPath:sSelf.h264FilePath];
+        }
+        const char bytes[] = "\x00\x00\x00\x01";
+        size_t length = (sizeof bytes) - 1; //string literals have implicit trailing '\0'
+        NSData *ByteHeader = [NSData dataWithBytes:bytes length:length];
+        [sSelf.h264fileHandle writeData:ByteHeader];
+        [sSelf.h264fileHandle writeData:sps];
+        [sSelf.h264fileHandle writeData:ByteHeader];
+        [sSelf.h264fileHandle writeData:pps];
+    };
     
     self.outputNode = [[JNGPUOutputNode alloc] init];
     self.outputNode.processingCallback32BGRA = ^(CVPixelBufferRef pixelBuffer, CMTime timeInfo) {
@@ -153,7 +159,7 @@
     [self.inputNode addTarget:self.outputNode];
 }
 
-- (void)jn__testH264Encoder
+- (void)jn__testOutputNode
 {
     self.inputNode = [[JNGPUInputNode alloc] initWithInputFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange];
     

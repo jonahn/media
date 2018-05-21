@@ -31,9 +31,10 @@
     _fps = 15;
     _kbps = 800;
     _gop = 3;
+    _running = NO;
 }
 
-void jn__processingCallback(void *userData, void *sourceFrameRefCon, OSStatus status, VTEncodeInfoFlags infoFlags,
+void jn__processingCallback(void *encoderIns, void *sourceFrameRefCon, OSStatus status, VTEncodeInfoFlags infoFlags,
                           CMSampleBufferRef sampleBuffer )
 {
     if (status != 0) {
@@ -43,7 +44,7 @@ void jn__processingCallback(void *userData, void *sourceFrameRefCon, OSStatus st
         return;
     }
     
-    JNH264Encoder *encoder = (__bridge JNH264Encoder*)sourceFrameRefCon;
+    JNH264Encoder *encoder = (__bridge JNH264Encoder*)encoderIns;
     bool keyframe = !CFDictionaryContainsKey((CFArrayGetValueAtIndex(CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, true), 0)), kCMSampleAttachmentKey_NotSync);
     NSData *sps = nil;
     NSData *pps = nil;
@@ -67,6 +68,9 @@ void jn__processingCallback(void *userData, void *sourceFrameRefCon, OSStatus st
             if (statusCode == noErr) {
                 sps = [NSData dataWithBytes:sparameterSet length:sparameterSetSize];
                 pps = [NSData dataWithBytes:pparameterSet length:pparameterSetSize];
+                if (encoder.processingSpsPps) {
+                    encoder.processingSpsPps(sps, pps);
+                }
             }
         }
     }
@@ -83,7 +87,7 @@ void jn__processingCallback(void *userData, void *sourceFrameRefCon, OSStatus st
             NALUnitLength = CFSwapInt32BigToHost(NALUnitLength);
             NSData *data = [[NSData alloc]initWithBytes:(dataPointer + bufferOffset + AVCCHeaderLength) length:NALUnitLength];
             if (encoder.processingEncodedData) {
-                encoder.processingEncodedData(pps, sps, data, keyframe);
+                encoder.processingEncodedData(data, keyframe);
             }
             bufferOffset += AVCCHeaderLength + NALUnitLength;
         }
@@ -118,6 +122,9 @@ void jn__processingCallback(void *userData, void *sourceFrameRefCon, OSStatus st
 
 - (void)stop
 {
+    if (_vtSession == NULL) {
+        return;
+    }
     VTCompressionSessionCompleteFrames(_vtSession, kCMTimeInvalid);
     VTCompressionSessionInvalidate(_vtSession);
     CFRelease(_vtSession);
@@ -126,6 +133,9 @@ void jn__processingCallback(void *userData, void *sourceFrameRefCon, OSStatus st
 
 - (void)processVideoBuffer:(CVPixelBufferRef)pixelBuffer timeInfo:(CMTime)timeInfo
 {
+    if(!_running){
+        return;
+    }
     __weak typeof(self) weakSelf = self;
     __block typeof(_vtSession) blockSession = _vtSession;
     dispatch_async(_encodeQueue, ^{
