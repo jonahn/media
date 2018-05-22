@@ -123,13 +123,18 @@ void jn__processingCallback(void *encoderIns, void *sourceFrameRefCon, OSStatus 
 
 - (void)stop
 {
+    if(!_running){
+        return;
+    }
     if (_vtSession == NULL) {
+        _running = NO;
         return;
     }
     VTCompressionSessionCompleteFrames(_vtSession, kCMTimeInvalid);
     VTCompressionSessionInvalidate(_vtSession);
     CFRelease(_vtSession);
     _vtSession = NULL;
+    _running = NO;
 }
 
 - (void)processVideoBuffer:(CVPixelBufferRef)pixelBuffer timeInfo:(CMTime)timeInfo
