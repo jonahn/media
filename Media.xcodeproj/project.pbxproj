@@ -21,6 +21,8 @@
 		AB77DD0020AD9E8F009E03EC /* GPUImageBeautifyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB77DCFF20AD9E8F009E03EC /* GPUImageBeautifyFilter.m */; };
 		AB77DD0320ADA865009E03EC /* JNGPUOutputNode.m in Sources */ = {isa = PBXBuildFile; fileRef = AB77DD0220ADA865009E03EC /* JNGPUOutputNode.m */; };
 		AB78657220AC3686003D2981 /* JNGPUInputNode.m in Sources */ = {isa = PBXBuildFile; fileRef = AB78657120AC3686003D2981 /* JNGPUInputNode.m */; };
+		ABD69A0920B3AA3F00864671 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD69A0820B3AA3F00864671 /* VideoToolbox.framework */; };
+		ABD69A0B20B3AA4500864671 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD69A0A20B3AA4500864671 /* AudioToolbox.framework */; };
 		ABD85A9E20AEF2AF00547A84 /* JNH264Encoder.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85A9D20AEF2AF00547A84 /* JNH264Encoder.m */; };
 		ABFF95A620B2E1BF00F6C2B2 /* JNACCEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFF95A520B2E1BF00F6C2B2 /* JNACCEncoder.m */; };
 		D9B7585DB568BBBECD061CC7 /* libPods-Media.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 547E4026C74380E2C7260ECF /* libPods-Media.a */; };
@@ -79,6 +81,9 @@
 		AB77DD0220ADA865009E03EC /* JNGPUOutputNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNGPUOutputNode.m; sourceTree = "<group>"; };
 		AB78657020AC3686003D2981 /* JNGPUInputNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNGPUInputNode.h; sourceTree = "<group>"; };
 		AB78657120AC3686003D2981 /* JNGPUInputNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNGPUInputNode.m; sourceTree = "<group>"; };
+		ABD69A0820B3AA3F00864671 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		ABD69A0A20B3AA4500864671 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		ABD69A0C20B3AA4E00864671 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		ABD85A9C20AEF2AF00547A84 /* JNH264Encoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNH264Encoder.h; sourceTree = "<group>"; };
 		ABD85A9D20AEF2AF00547A84 /* JNH264Encoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNH264Encoder.m; sourceTree = "<group>"; };
 		ABFF95A420B2E1BF00F6C2B2 /* JNACCEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNACCEncoder.h; sourceTree = "<group>"; };
@@ -91,6 +96,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABD69A0B20B3AA4500864671 /* AudioToolbox.framework in Frameworks */,
+				ABD69A0920B3AA3F00864671 /* VideoToolbox.framework in Frameworks */,
 				D9B7585DB568BBBECD061CC7 /* libPods-Media.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -117,6 +124,9 @@
 		62F9EBA36B521A41357AE436 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ABD69A0C20B3AA4E00864671 /* AudioUnit.framework */,
+				ABD69A0A20B3AA4500864671 /* AudioToolbox.framework */,
+				ABD69A0820B3AA3F00864671 /* VideoToolbox.framework */,
 				547E4026C74380E2C7260ECF /* libPods-Media.a */,
 				9E8A4DCA793ADA45414892EE /* libPods-MediaTests.a */,
 				7FA17462D3BDE8A9D6FC0113 /* libPods-MediaUITests.a */,

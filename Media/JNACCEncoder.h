@@ -11,5 +11,12 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface JNACCEncoder : NSObject
+@property (nonatomic, assign) BOOL   running;
+@property (nonatomic, assign) double sampleRate; //帧率
+@property (nonatomic, assign) int    kbps;       //码率
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+
+- (OSStatus)run;
+
+- (void)stop;
 @end
