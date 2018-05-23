@@ -156,7 +156,7 @@ OSStatus jn__micCallBackFun(void *inRefCon,
 
 - (void)stopCapture
 {
-    AudioUnitUninitialize(_audioComponentInstance);
     AudioOutputUnitStop(_audioComponentInstance);
+    AudioUnitUninitialize(_audioComponentInstance);
 }
 @end

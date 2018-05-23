@@ -12,12 +12,14 @@
 #import "GPUImageBeautifyFilter.h"
 #import "JNGPUOutputNode.h"
 #import "JNH264Encoder.h"
+#import "JNAUAudioCapture.h"
+#import "JNAACEncoder.h"
 
 @interface ViewController ()
 @property (nonatomic, strong) JNAVVideoCapture *videoCapture;
 @property (nonatomic, strong) JNGPUInputNode *inputNode;
 @property (nonatomic, strong) GPUImageView *displayImageView;
-@property (nonatomic, strong)  GPUImageVideoCamera *videoCamera;
+@property (nonatomic, strong) GPUImageVideoCamera *videoCamera;
 
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) GPUImageBeautifyFilter *beautyFilter;
@@ -26,6 +28,11 @@
 @property (nonatomic, strong) JNH264Encoder *h264Encoder;
 @property (nonatomic, strong)  NSFileHandle *h264fileHandle;
 @property (nonatomic, strong)  NSString     *h264FilePath;
+
+@property (nonatomic, strong)  JNAUAudioCapture *audioCapture;
+@property (nonatomic, strong)  JNAACEncoder     *AACEncoder;
+@property (nonatomic, strong)  NSFileHandle     *AACfileHandle;
+@property (nonatomic, strong)  NSString         *AACFilePath;
 @end
 
 @implementation ViewController
@@ -46,6 +53,8 @@
     [self jn__testH264Encoder];
     
 //    [self jn__testGPUCamera];
+    
+    [self jn_testAudioCaptureAndAACEncoder];
 }
 
 - (void)jn_videoCaptureTestUseImageView
@@ -54,7 +63,8 @@
     self.imageView.frame = self.view.bounds;
     [self.view addSubview:self.imageView];
     [self.view sendSubviewToBack:self.imageView];
-    
+    [self.imageView setContentMode:UIViewContentModeScaleToFill];
+
     __weak typeof(self) weakSelf = self;
     self.videoCapture  = [[JNAVVideoCapture alloc] initWithPreset:AVCaptureSessionPreset1280x720 cameraPosition:AVCaptureDevicePositionFront fps:25 outPutDataFmt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange processingCallback:^(CMSampleBufferRef sampleBuffer) {
             [weakSelf drawSampleBuffer:sampleBuffer];
@@ -114,6 +124,7 @@
     
     self.imageView = [[UIImageView alloc] init];
     self.imageView.frame = self.view.bounds;
+    [self.imageView setContentMode:UIViewContentModeScaleToFill];
     [self.view addSubview:self.imageView];
     [self.view sendSubviewToBack:self.imageView];
     
@@ -209,6 +220,24 @@
     [self.videoCamera startCameraCapture];
 }
 
+- (void)jn_testAudioCaptureAndAACEncoder
+{
+    self.audioCapture = [[JNAUAudioCapture alloc] init];
+    self.AACEncoder = [[JNAACEncoder alloc] init];
+    
+    __weak typeof(self) weakSelf = self;
+    self.audioCapture.audioProcessingCallback = ^(CMSampleBufferRef sampleBuffer) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        [sSelf.AACEncoder processSampleBuffer:sampleBuffer];
+    };
+    self.AACEncoder.processingEncodedData = ^(NSData *rowAAC) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        [sSelf saveAAC:rowAAC];
+    };
+    
+    
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -252,6 +281,77 @@
         sender.selected = YES;
     }
 }
+- (IBAction)startAudioCapture:(UIButton *)sender {
+    if (sender.selected) {
+        [self.audioCapture stopCapture];
+        sender.selected = NO;
+    }
+    else{
+        [self.audioCapture startCapture];
+        sender.selected = YES;
+    }
+}
+
+- (IBAction)startAAC:(UIButton *)sender {
+    if (sender.selected) {
+        [self.AACEncoder stop];
+        sender.selected = NO;
+        self.AACFilePath = nil;
+        [self.AACfileHandle closeFile];
+        self.AACfileHandle = nil;
+    }
+    else{
+        [self.AACEncoder run];
+        sender.selected = YES;
+    }
+}
+
+- (void)saveAAC:(NSData *)rawAAC
+{
+    if (!self.AACFilePath) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        self.AACFilePath = [documentsDirectory stringByAppendingPathComponent:@"TestAAC.aac"];
+        [fileManager removeItemAtPath:self.AACFilePath error:nil];
+        [fileManager createFileAtPath:self.AACFilePath contents:nil attributes:nil];
+        self.AACfileHandle = [NSFileHandle fileHandleForWritingAtPath:self.AACFilePath];
+    }
+    int headerLength = 0;
+    char *packetHeader = newAdtsDataForPacketLength((int)rawAAC.length, self.AACEncoder.sampleRate, 1, &headerLength);
+    NSData *adtsHeader = [NSData dataWithBytes:packetHeader length:headerLength];
+    free(packetHeader);
+    NSMutableData *fullData = [NSMutableData dataWithData:adtsHeader];
+    [fullData appendData:rawAAC];
+    [self.AACfileHandle writeData:fullData];
+}
+
+// 給aac加上adts头, packetLength 为rewaac的长度，
+char *newAdtsDataForPacketLength(int packetLength,int sampleRate,int channelCout, int *ioHeaderLen){
+    // adts头的长度为固定的7个字节
+    int adtsLen = 7;
+    // 在堆区分配7个字节的内存
+    char *packet = malloc(sizeof(char) * adtsLen);
+    // 选择AAC LC
+    int profile = 2;
+    // 选择采样率对应的下标
+    int freqIdx = 4;
+    // 选择声道数所对应的下标
+    int chanCfg = 1;
+    // 获取adts头和raw aac的总长度
+    NSUInteger fullLength = adtsLen + packetLength;
+    // 设置syncword
+    packet[0] = 0xFF;
+    packet[1] = 0xF9;
+    packet[2] = (char)(((profile - 1)<<6) + (freqIdx<<2)+(chanCfg>>2));
+    packet[3] = (char)(((chanCfg&3)<<6)+(fullLength>>11));
+    packet[4] = (char)((fullLength&0x7FF)>>3);
+    packet[5] = (char)(((fullLength&7)<<5)+0x1F);
+    packet[6] = (char)0xFC;
+    *ioHeaderLen =adtsLen;
+    return packet;
+}
+
 
 - (void)drawSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {

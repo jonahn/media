@@ -22,6 +22,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>获取相机权限</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>获取麦克风权限</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
