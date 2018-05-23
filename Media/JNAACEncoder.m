@@ -65,7 +65,7 @@ OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConvert
     AudioStreamBasicDescription outAudioDes = {
         .mFormatID = kAudioFormatMPEG4AAC,
         .mFormatFlags = kMPEG4Object_AAC_LC,
-        .mChannelsPerFrame = 1,
+        .mChannelsPerFrame = 2,
         0
     };
     UInt32 outDesSize = sizeof(outAudioDes);
@@ -91,7 +91,7 @@ OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConvert
         return;
     }
     AudioConverterDispose(_audioConverter);
-    _audioConverter = nil;
+    _audioConverter = NULL;
     _running = NO;
 }
 
@@ -130,7 +130,7 @@ OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConvert
         
         UInt32 packetSize = 1;
 //        AudioStreamPacketDescription *outputPacketDes = (AudioStreamPacketDescription *)malloc(sizeof(AudioStreamPacketDescription) * packetSize);
-
+        
         status = AudioConverterFillComplexBuffer(sSelf.audioConverter, jn__audioConverterComplexInputDataProc, &input, &packetSize, &outputBufferList, NULL);
 //        free(outputPacketDes);
 
