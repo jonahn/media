@@ -33,7 +33,7 @@ typedef struct {
 {
     _encodeQueue = dispatch_queue_create("jn.AACEncoder", DISPATCH_QUEUE_SERIAL);
     _sampleRate = 44100;
-    _kbps = 48;
+    _kbps = 96;
 }
 
 OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConverter,UInt32 * ioNumberDataPacket,AudioBufferList *ioData,AudioStreamPacketDescription ** outDataPacketDescription,void *inputData)
@@ -41,7 +41,7 @@ OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConvert
     JNAudioConverterFillComplexInput *input = (JNAudioConverterFillComplexInput *)inputData;
     ioData->mBuffers[0].mData = input->pcmData;
     ioData->mBuffers[0].mDataByteSize = input->pcmLength;
-    ioData->mBuffers[0].mNumberChannels = 2;
+    ioData->mBuffers[0].mNumberChannels = 1;
     *ioNumberDataPacket = 1;
     return noErr;
 }
@@ -56,16 +56,16 @@ OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConvert
         .mSampleRate = _sampleRate,
         .mFormatID = kAudioFormatLinearPCM,
         .mFormatFlags = kLinearPCMFormatFlagIsPacked | kLinearPCMFormatFlagIsSignedInteger,
-        .mChannelsPerFrame = 2,
+        .mChannelsPerFrame = 1,
         .mFramesPerPacket = 1,
         .mBitsPerChannel = 16,
-        .mBytesPerFrame = 4,
-        .mBytesPerPacket = 4,
+        .mBytesPerFrame = 2,
+        .mBytesPerPacket = 2,
     };
     AudioStreamBasicDescription outAudioDes = {
         .mFormatID = kAudioFormatMPEG4AAC,
         .mFormatFlags = kMPEG4Object_AAC_LC,
-        .mChannelsPerFrame = 2,
+        .mChannelsPerFrame = 1,
         0
     };
     UInt32 outDesSize = sizeof(outAudioDes);
@@ -126,7 +126,7 @@ OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConvert
         outputBufferList.mNumberBuffers = 1;
         outputBufferList.mBuffers[0].mData = outputBuffer;
         outputBufferList.mBuffers[0].mDataByteSize = pcmLength;
-        outputBufferList.mBuffers[0].mNumberChannels = 2;
+        outputBufferList.mBuffers[0].mNumberChannels = 1;
         
         UInt32 packetSize = 1;
 //        AudioStreamPacketDescription *outputPacketDes = (AudioStreamPacketDescription *)malloc(sizeof(AudioStreamPacketDescription) * packetSize);

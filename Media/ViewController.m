@@ -230,9 +230,9 @@
         __strong typeof(weakSelf) sSelf = weakSelf;
         [sSelf.AACEncoder processSampleBuffer:sampleBuffer];
     };
-    self.AACEncoder.processingEncodedData = ^(NSData *rowAAC) {
+    self.AACEncoder.processingEncodedData = ^(NSData *rawAAC) {
         __strong typeof(weakSelf) sSelf = weakSelf;
-        [sSelf saveAAC:rowAAC];
+        [sSelf saveAAC:rawAAC];
     };
     
     

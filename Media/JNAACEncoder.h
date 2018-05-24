@@ -15,7 +15,7 @@
 @property (nonatomic, assign) double sampleRate; //帧率
 @property (nonatomic, assign) int    kbps;       //码率
 
-@property (nonatomic, copy) void(^processingEncodedData)(NSData *rowAAC);
+@property (nonatomic, copy) void(^processingEncodedData)(NSData *rawAAC);
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 

@@ -54,7 +54,7 @@
     _streamDesc.mSampleRate = _sampleRate;
     _streamDesc.mFormatID = kAudioFormatLinearPCM;
     _streamDesc.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    _streamDesc.mChannelsPerFrame = 2;
+    _streamDesc.mChannelsPerFrame = 1;
     _streamDesc.mFramesPerPacket = 1;
     _streamDesc.mBitsPerChannel = 16;
     _streamDesc.mBytesPerFrame = _streamDesc.mBitsPerChannel / 8 * _streamDesc.mChannelsPerFrame;
@@ -93,7 +93,7 @@ OSStatus jn__micCallBackFun(void *inRefCon,
         AudioBuffer buffer;
         buffer.mData = NULL;
         buffer.mDataByteSize = 0;
-        buffer.mNumberChannels = 2;
+        buffer.mNumberChannels = 1;
         
         AudioBufferList bufferList;
         bufferList.mNumberBuffers = 1;
@@ -125,7 +125,7 @@ OSStatus jn__micCallBackFun(void *inRefCon,
         if (status) { //失败
             return;
         }
-        CMSampleTimingInfo timing = { CMTimeMake(1, weakSelf.sampleRate), kCMTimeZero, kCMTimeInvalid };
+        CMSampleTimingInfo timing = { CMTimeMake(1, weakSelf.sampleRate), CMTimeMake([[NSDate date] timeIntervalSince1970] * 1000000.0, 1000000.0), kCMTimeInvalid };
         status = CMSampleBufferCreate(kCFAllocatorDefault, NULL, false, NULL, NULL, format, (CMItemCount)inNumberFrames, 1, &timing, 0, NULL, &buff);
         if (status) { //失败
             CFRelease(buff);
