@@ -32,7 +32,7 @@ typedef struct {
 - (void)jn__setup
 {
     _encodeQueue = dispatch_queue_create("jn.AACEncoder", DISPATCH_QUEUE_SERIAL);
-    _sampleRate = 44100;
+    _sampleRate = 48000.0;
     _kbps = 96;
 }
 

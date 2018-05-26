@@ -34,7 +34,7 @@
 
 - (instancetype)init
 {
-    self = [self initWithSampleRate:44100.0];
+    self = [self initWithSampleRate:48000.0];
     if (self) {
         
     }
@@ -51,14 +51,12 @@
 
 - (void)jn__setup
 {
-    _streamDesc.mSampleRate = _sampleRate;
-    _streamDesc.mFormatID = kAudioFormatLinearPCM;
-    _streamDesc.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    _streamDesc.mChannelsPerFrame = 1;
-    _streamDesc.mFramesPerPacket = 1;
-    _streamDesc.mBitsPerChannel = 16;
-    _streamDesc.mBytesPerFrame = _streamDesc.mBitsPerChannel / 8 * _streamDesc.mChannelsPerFrame;
-    _streamDesc.mBytesPerPacket = _streamDesc.mBytesPerFrame * _streamDesc.mFramesPerPacket;
+    NSError *error = nil;
+    AVAudioSession* session = [AVAudioSession sharedInstance];
+    [session setCategory:AVAudioSessionCategoryPlayAndRecord  withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionAllowBluetooth  error:&error];
+    [session setActive:YES error:nil];
+    
+    _streamDesc = [self getStreamBaseDesc];
     
     _acDesc.componentType = kAudioUnitType_Output;
     _acDesc.componentSubType = kAudioUnitSubType_RemoteIO;
@@ -81,11 +79,11 @@
 }
 
 OSStatus jn__micCallBackFun(void *inRefCon,
-                        AudioUnitRenderActionFlags *ioActionFlags,
-                        const AudioTimeStamp *inTimeStamp,
-                        UInt32 inBusNumber,
-                        UInt32 inNumberFrames,
-                        AudioBufferList *ioData)
+                            AudioUnitRenderActionFlags *ioActionFlags,
+                            const AudioTimeStamp *inTimeStamp,
+                            UInt32 inBusNumber,
+                            UInt32 inNumberFrames,
+                            AudioBufferList *ioData)
 {
     @autoreleasepool {
         JNAUAudioCapture *ref = (__bridge JNAUAudioCapture *)inRefCon;
@@ -102,7 +100,7 @@ OSStatus jn__micCallBackFun(void *inRefCon,
         AudioUnitRender(ref.audioComponentInstance,
                         ioActionFlags,
                         inTimeStamp,
-                        1,
+                        inBusNumber,
                         inNumberFrames,
                         &bufferList);
         if (ref.audioProcessingBufferList) {
@@ -114,11 +112,27 @@ OSStatus jn__micCallBackFun(void *inRefCon,
         return noErr;
     }
 }
+
+- (AudioStreamBasicDescription)getStreamBaseDesc
+{
+    AudioStreamBasicDescription desc =  {
+        .mSampleRate = _sampleRate,
+        .mFormatID = kAudioFormatLinearPCM,
+        .mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
+        .mChannelsPerFrame = 1,
+        .mFramesPerPacket = 1,
+        .mBitsPerChannel = 16,
+        .mBytesPerFrame = 2,
+        .mBytesPerPacket = 2,
+    };
+    return desc;
+}
+
 - (void)jn__toSampleBuffer:(AudioBufferList)audioBufferList inNumberFrames:(UInt32)inNumberFrames
 {
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.audioProcessingQueue, ^{
-        AudioStreamBasicDescription asbd = weakSelf.streamDesc;
+        AudioStreamBasicDescription asbd = [weakSelf getStreamBaseDesc];
         CMSampleBufferRef buff = NULL;
         CMFormatDescriptionRef format = NULL;
         OSStatus status = CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &asbd, 0, NULL, 0, NULL, NULL, &format);
@@ -149,7 +163,6 @@ OSStatus jn__micCallBackFun(void *inRefCon,
     AVAudioSession* session = [AVAudioSession sharedInstance];
     [session setCategory:AVAudioSessionCategoryPlayAndRecord  withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionAllowBluetooth  error:&error];
     [session setActive:YES error:nil];
-    
     AudioUnitInitialize(_audioComponentInstance);
     AudioOutputUnitStart(_audioComponentInstance);
 }
@@ -158,5 +171,8 @@ OSStatus jn__micCallBackFun(void *inRefCon,
 {
     AudioOutputUnitStop(_audioComponentInstance);
     AudioUnitUninitialize(_audioComponentInstance);
+    AVAudioSession* session = [AVAudioSession sharedInstance];
+    [session setActive:NO error:nil];
+
 }
 @end
