@@ -8,6 +8,4 @@ iOS media tool
     美颜来自https://github.com/Guikunzhi/BeautifyFaceDemo
 4. GPUImage处理后输出buffer      JNGPUOutputNode
 5. 视频编码（硬编VideoToolBox）
-6. 音频编码
-
-接下来
+6. 音频编码 (硬编toolbox)
