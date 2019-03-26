@@ -34,7 +34,7 @@
 
 - (instancetype)init
 {
-    self = [self initWithSampleRate:48000.0];
+    self = [self initWithSampleRate:[AVAudioSession sharedInstance].sampleRate];
     if (self) {
         
     }
