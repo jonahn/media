@@ -32,7 +32,8 @@ typedef struct {
 - (void)jn__setup
 {
     _encodeQueue = dispatch_queue_create("jn.AACEncoder", DISPATCH_QUEUE_SERIAL);
-    _sampleRate = [AVAudioSession sharedInstance].sampleRate;
+    _inputSampleRate = [AVAudioSession sharedInstance].sampleRate;
+    _outputSampleRate = [AVAudioSession sharedInstance].sampleRate;
     _kbps = 96;
 }
 
@@ -53,7 +54,7 @@ OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConvert
     }
     _running = YES;
     AudioStreamBasicDescription inputAudioDes = {
-        .mSampleRate = _sampleRate,
+        .mSampleRate = _inputSampleRate,
         .mFormatID = kAudioFormatLinearPCM,
         .mFormatFlags = kLinearPCMFormatFlagIsPacked | kLinearPCMFormatFlagIsSignedInteger,
         .mChannelsPerFrame = 1,
@@ -63,6 +64,7 @@ OSStatus jn__audioConverterComplexInputDataProc(AudioConverterRef inAudioConvert
         .mBytesPerPacket = 2,
     };
     AudioStreamBasicDescription outAudioDes = {
+        .mSampleRate = _outputSampleRate,
         .mFormatID = kAudioFormatMPEG4AAC,
         .mFormatFlags = kMPEG4Object_AAC_LC,
         .mChannelsPerFrame = 1,

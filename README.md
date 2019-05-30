@@ -9,3 +9,4 @@ iOS media tool
 4. GPUImage处理后输出buffer      JNGPUOutputNode
 5. 视频编码（硬编VideoToolBox）
 6. 音频编码 (硬编toolbox)
+7. lame.framework  mp3编码

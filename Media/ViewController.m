@@ -14,6 +14,7 @@
 #import "JNH264Encoder.h"
 #import "JNAUAudioCapture.h"
 #import "JNAACEncoder.h"
+#import "JNMp3Encoder.h"
 
 @interface ViewController ()
 @property (nonatomic, strong) JNAVVideoCapture *videoCapture;
@@ -31,8 +32,10 @@
 
 @property (nonatomic, strong)  JNAUAudioCapture *audioCapture;
 @property (nonatomic, strong)  JNAACEncoder     *AACEncoder;
-@property (nonatomic, strong)  NSFileHandle     *AACfileHandle;
-@property (nonatomic, strong)  NSString         *AACFilePath;
+@property (nonatomic, strong)  NSFileHandle     *AudioFileHandle;
+@property (nonatomic, strong)  NSString         *AudioFilePath;
+
+@property (nonatomic, strong) JNMp3Encoder *mp3Encoder;
 @end
 
 @implementation ViewController
@@ -54,7 +57,10 @@
     
 //    [self jn__testGPUCamera];
     
-    [self jn_testAudioCaptureAndAACEncoder];
+//    [self jn_testAudioCaptureAndAACEncoder];
+    
+    [self jn_testAudioCaptureAndMp3Encoder];
+    
 }
 
 - (void)jn_videoCaptureTestUseImageView
@@ -234,8 +240,21 @@
         __strong typeof(weakSelf) sSelf = weakSelf;
         [sSelf saveAAC:rawAAC];
     };
-    
-    
+}
+
+- (void)jn_testAudioCaptureAndMp3Encoder
+{
+    self.audioCapture = [[JNAUAudioCapture alloc] init];
+    self.mp3Encoder = [[JNMp3Encoder alloc] init];
+    __weak typeof(self) weakSelf = self;
+    self.audioCapture.audioProcessingBufferList = ^(AudioBufferList bufferList, UInt32 inNumberFrames) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        [sSelf.mp3Encoder processAudioBufferList:bufferList];
+    };
+    self.mp3Encoder.processingEncodedData = ^(NSData * _Nonnull mp3Data) {
+        __strong typeof(weakSelf) sSelf = weakSelf;
+        [sSelf saveMp3Data:mp3Data];
+    };
 }
 
 - (void)didReceiveMemoryWarning {
@@ -296,34 +315,62 @@
     if (sender.selected) {
         [self.AACEncoder stop];
         sender.selected = NO;
-        self.AACFilePath = nil;
-        [self.AACfileHandle closeFile];
-        self.AACfileHandle = nil;
+        self.AudioFilePath = nil;
+        [self.AudioFileHandle closeFile];
+        self.AudioFileHandle = nil;
     }
     else{
         [self.AACEncoder run];
         sender.selected = YES;
     }
 }
+- (IBAction)startMp3Recorder:(UIButton*)sender {
+    if (sender.selected) {
+        [self.mp3Encoder stop];
+        sender.selected = NO;
+        self.AudioFilePath = nil;
+        [self.AudioFileHandle closeFile];
+        self.AudioFileHandle = nil;
+    }
+    else{
+        [self.mp3Encoder run];
+        sender.selected = YES;
+    }
+    
+}
 
 - (void)saveAAC:(NSData *)rawAAC
 {
-    if (!self.AACFilePath) {
+    if (!self.AudioFilePath) {
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
-        self.AACFilePath = [documentsDirectory stringByAppendingPathComponent:@"TestAAC.aac"];
-        [fileManager removeItemAtPath:self.AACFilePath error:nil];
-        [fileManager createFileAtPath:self.AACFilePath contents:nil attributes:nil];
-        self.AACfileHandle = [NSFileHandle fileHandleForWritingAtPath:self.AACFilePath];
+        self.AudioFilePath = [documentsDirectory stringByAppendingPathComponent:@"TestAAC.aac"];
+        [fileManager removeItemAtPath:self.AudioFilePath error:nil];
+        [fileManager createFileAtPath:self.AudioFilePath contents:nil attributes:nil];
+        self.AudioFileHandle = [NSFileHandle fileHandleForWritingAtPath:self.AudioFilePath];
     }
     int headerLength = 0;
-    char *packetHeader = newAdtsDataForPacketLength((int)rawAAC.length, self.AACEncoder.sampleRate, 1, &headerLength);
+    char *packetHeader = newAdtsDataForPacketLength((int)rawAAC.length, self.AACEncoder.outputSampleRate, 1, &headerLength);
     NSData *adtsHeader = [NSData dataWithBytes:packetHeader length:headerLength];
     free(packetHeader);
     NSMutableData *fullData = [NSMutableData dataWithData:adtsHeader];
     [fullData appendData:rawAAC];
-    [self.AACfileHandle writeData:fullData];
+    [self.AudioFileHandle writeData:fullData];
+}
+
+- (void)saveMp3Data:(NSData *)mp3Data
+{
+    if (!self.AudioFilePath) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        self.AudioFilePath = [documentsDirectory stringByAppendingPathComponent:@"TestMp3.mp3"];
+        [fileManager removeItemAtPath:self.AudioFilePath error:nil];
+        [fileManager createFileAtPath:self.AudioFilePath contents:nil attributes:nil];
+        self.AudioFileHandle = [NSFileHandle fileHandleForWritingAtPath:self.AudioFilePath];
+    }
+    [self.AudioFileHandle writeData:mp3Data];
 }
 
 // 給aac加上adts头, packetLength 为rewaac的长度，

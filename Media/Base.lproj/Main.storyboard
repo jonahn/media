@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -58,13 +57,22 @@
                                     <action selector="startAudioCapture:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Dqr-sn-TEb"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S26-w5-44Z">
-                                <rect key="frame" x="250" y="340" width="73" height="34"/>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S26-w5-44Z">
+                                <rect key="frame" x="182" y="340" width="141" height="34"/>
                                 <color key="backgroundColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" title="startAAC"/>
+                                <state key="normal" title="startAAC(被注释)"/>
                                 <state key="selected" title="stopAAC"/>
                                 <connections>
                                     <action selector="startAAC:" destination="BYZ-38-t0r" eventType="touchUpInside" id="bz2-3d-T05"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a06-3g-1gU">
+                                <rect key="frame" x="7" y="404" width="75" height="34"/>
+                                <color key="backgroundColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="startMp3"/>
+                                <state key="selected" title="stop__Mp3"/>
+                                <connections>
+                                    <action selector="startMp3Recorder:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7h8-XL-G5b"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -78,8 +86,10 @@
                             <constraint firstItem="dVo-Ed-Twf" firstAttribute="top" secondItem="0MD-ic-WKa" secondAttribute="bottom" constant="77" id="Dtg-O9-aHi"/>
                             <constraint firstAttribute="trailingMargin" secondItem="S26-w5-44Z" secondAttribute="trailing" constant="36" id="NiZ-1k-zaa"/>
                             <constraint firstAttribute="trailingMargin" secondItem="lN8-ym-1w2" secondAttribute="trailing" constant="32" id="RTB-zK-y28"/>
+                            <constraint firstItem="0MD-ic-WKa" firstAttribute="top" secondItem="a06-3g-1gU" secondAttribute="bottom" constant="118" id="oNO-Kn-1qu"/>
                             <constraint firstItem="0MD-ic-WKa" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="9" id="sAe-rR-Tw6"/>
                             <constraint firstItem="dVo-Ed-Twf" firstAttribute="top" secondItem="QzV-8g-qwf" secondAttribute="bottom" constant="79" id="sxl-Q8-VyS"/>
+                            <constraint firstItem="a06-3g-1gU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="7" id="woH-EH-1eH"/>
                         </constraints>
                     </view>
                 </viewController>

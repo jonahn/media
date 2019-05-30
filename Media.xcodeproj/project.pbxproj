@@ -24,6 +24,8 @@
 		ABD69A0920B3AA3F00864671 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD69A0820B3AA3F00864671 /* VideoToolbox.framework */; };
 		ABD69A0B20B3AA4500864671 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABD69A0A20B3AA4500864671 /* AudioToolbox.framework */; };
 		ABD85A9E20AEF2AF00547A84 /* JNH264Encoder.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD85A9D20AEF2AF00547A84 /* JNH264Encoder.m */; };
+		ABDE964D229FA7AE00D7140E /* lame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDE964C229FA7AE00D7140E /* lame.framework */; };
+		ABDE9650229FA7CC00D7140E /* JNMp3Encoder.m in Sources */ = {isa = PBXBuildFile; fileRef = ABDE964F229FA7CC00D7140E /* JNMp3Encoder.m */; };
 		ABFF95A620B2E1BF00F6C2B2 /* JNAACEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFF95A520B2E1BF00F6C2B2 /* JNAACEncoder.m */; };
 		D9B7585DB568BBBECD061CC7 /* libPods-Media.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 547E4026C74380E2C7260ECF /* libPods-Media.a */; };
 		E0EE3AAF33C132ADEDA1AFE6 /* libPods-MediaUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA17462D3BDE8A9D6FC0113 /* libPods-MediaUITests.a */; };
@@ -86,6 +88,9 @@
 		ABD69A0C20B3AA4E00864671 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		ABD85A9C20AEF2AF00547A84 /* JNH264Encoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNH264Encoder.h; sourceTree = "<group>"; };
 		ABD85A9D20AEF2AF00547A84 /* JNH264Encoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNH264Encoder.m; sourceTree = "<group>"; };
+		ABDE964C229FA7AE00D7140E /* lame.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = lame.framework; sourceTree = "<group>"; };
+		ABDE964E229FA7CC00D7140E /* JNMp3Encoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNMp3Encoder.h; sourceTree = "<group>"; };
+		ABDE964F229FA7CC00D7140E /* JNMp3Encoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNMp3Encoder.m; sourceTree = "<group>"; };
 		ABFF95A420B2E1BF00F6C2B2 /* JNAACEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JNAACEncoder.h; sourceTree = "<group>"; };
 		ABFF95A520B2E1BF00F6C2B2 /* JNAACEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JNAACEncoder.m; sourceTree = "<group>"; };
 		B98790C2E3798C03BA496356 /* Pods-MediaUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MediaUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MediaUITests/Pods-MediaUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -97,6 +102,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABD69A0B20B3AA4500864671 /* AudioToolbox.framework in Frameworks */,
+				ABDE964D229FA7AE00D7140E /* lame.framework in Frameworks */,
 				ABD69A0920B3AA3F00864671 /* VideoToolbox.framework in Frameworks */,
 				D9B7585DB568BBBECD061CC7 /* libPods-Media.a in Frameworks */,
 			);
@@ -150,6 +156,7 @@
 		AB29F3C0208DB4AC00A06696 = {
 			isa = PBXGroup;
 			children = (
+				ABDE964B229FA7AE00D7140E /* lame_mp3framework */,
 				AB29F3CB208DB4AC00A06696 /* Media */,
 				AB29F3E4208DB4AE00A06696 /* MediaTests */,
 				AB29F3EF208DB4AE00A06696 /* MediaUITests */,
@@ -186,6 +193,8 @@
 				ABD85A9D20AEF2AF00547A84 /* JNH264Encoder.m */,
 				ABFF95A420B2E1BF00F6C2B2 /* JNAACEncoder.h */,
 				ABFF95A520B2E1BF00F6C2B2 /* JNAACEncoder.m */,
+				ABDE964E229FA7CC00D7140E /* JNMp3Encoder.h */,
+				ABDE964F229FA7CC00D7140E /* JNMp3Encoder.m */,
 				AB29F3CC208DB4AC00A06696 /* AppDelegate.h */,
 				AB29F3CD208DB4AD00A06696 /* AppDelegate.m */,
 				AB29F3CF208DB4AD00A06696 /* ViewController.h */,
@@ -215,6 +224,14 @@
 				AB29F3F2208DB4AE00A06696 /* Info.plist */,
 			);
 			path = MediaUITests;
+			sourceTree = "<group>";
+		};
+		ABDE964B229FA7AE00D7140E /* lame_mp3framework */ = {
+			isa = PBXGroup;
+			children = (
+				ABDE964C229FA7AE00D7140E /* lame.framework */,
+			);
+			path = lame_mp3framework;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -519,6 +536,7 @@
 				AB29F402208DB51500A06696 /* JNAUAudioCapture.m in Sources */,
 				AB77DD0020AD9E8F009E03EC /* GPUImageBeautifyFilter.m in Sources */,
 				ABD85A9E20AEF2AF00547A84 /* JNH264Encoder.m in Sources */,
+				ABDE9650229FA7CC00D7140E /* JNMp3Encoder.m in Sources */,
 				AB29F3D1208DB4AD00A06696 /* ViewController.m in Sources */,
 				AB29F3DC208DB4AE00A06696 /* main.m in Sources */,
 				AB29F3CE208DB4AD00A06696 /* AppDelegate.m in Sources */,
@@ -694,7 +712,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = YGF8AGJHBB;
+				DEVELOPMENT_TEAM = Y42L8WRP5G;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lame_mp3framework",
+				);
 				INFOPLIST_FILE = Media/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -713,7 +735,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = YGF8AGJHBB;
+				DEVELOPMENT_TEAM = Y42L8WRP5G;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lame_mp3framework",
+				);
 				INFOPLIST_FILE = Media/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = (

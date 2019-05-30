@@ -12,7 +12,8 @@
 
 @interface JNAACEncoder : NSObject
 @property (nonatomic, assign) BOOL   running;
-@property (nonatomic, assign) double sampleRate; //帧率
+@property (nonatomic, assign) double inputSampleRate; //输入buffer帧率
+@property (nonatomic, assign) double outputSampleRate; //编码输出帧率
 @property (nonatomic, assign) int    kbps;       //码率
 
 @property (nonatomic, copy) void(^processingEncodedData)(NSData *rawAAC);
