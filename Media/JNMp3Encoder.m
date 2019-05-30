@@ -9,6 +9,13 @@
 #import "JNMp3Encoder.h"
 #import <lame/lame.h>
 
+/* convert CMSampleBuffer to audioBufferList
+ CMBlockBufferRef buffer = CMSampleBufferGetDataBuffer(a CMSampleBufferRef);
+ AudioBufferList audioBufferList;
+ CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sample, NULL, &audioBufferList, sizeof(audioBufferList), NULL, NULL,
+ kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked | kAudioFormatFlagIsFloat | kAudioFormatFlagIsNonInterleaved, &buffer);
+ */
+
 const int MP3_BUFF_SIZE = 4096;
 
 @interface JNMp3Encoder ()
@@ -90,7 +97,6 @@ const int MP3_BUFF_SIZE = 4096;
         NSData *data = nil;
         if (channels == 2) {
             bytesWritten = lame_encode_buffer_interleaved(sSelf->lame, pcmData, size, sSelf->mp3_buffer, MP3_BUFF_SIZE);
-
         }
         else if (channels == 1){
             if (sSelf->pcmData1 == NULL) {
