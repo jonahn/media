@@ -107,13 +107,13 @@ const int MP3_BUFF_SIZE = 4096;
             }
             if (sSelf->pcmData1 && sSelf->pcmData2) {
                 bytesWritten = lame_encode_buffer(sSelf->lame, sSelf->pcmData1, sSelf->pcmData2,size, sSelf->mp3_buffer, MP3_BUFF_SIZE);
-                data = [[NSData alloc] initWithBytes:sSelf->mp3_buffer length:bytesWritten];
                 sSelf->pcmData1 = NULL;
                 sSelf->pcmData2 = NULL;
 
             }
         }
         if (bytesWritten && sSelf.processingEncodedData) {
+            data = [[NSData alloc] initWithBytes:sSelf->mp3_buffer length:bytesWritten];
             sSelf.processingEncodedData(data);
         }
     });
